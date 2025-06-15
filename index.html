@@ -1,68 +1,31 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <meta name="description" content="EyeFem - Your eye care solution" />
-    <meta name="theme-color" content="#000000" />
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="EyeFem">
-    <title>EyeFem</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Eyefem Healthcare - Eye Care & Gynecology Specialists</title>
+    <meta name="description" content="Specialized medical care for Eye Health and Women's Health, delivered by expert doctors with cutting-edge technology." />
+    <meta name="author" content="Eyefem Healthcare" />
+
+    <meta property="og:title" content="Eyefem Healthcare - Eye Care & Gynecology Specialists" />
+    <meta property="og:description" content="Specialized medical care for Eye Health and Women's Health, delivered by expert doctors with cutting-edge technology." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@eyefem" />
+    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
     
-    <script>
-      // Error handling for production
-      if (window.location.hostname !== 'localhost') {
-        // Redirect to HTTPS
-        if (window.location.protocol !== 'https:') {
-          window.location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
-        }
-        
-        // Handle chunk loading errors
-        window.addEventListener('error', function(event) {
-          const target = event.target || event.srcElement;
-          if (target && (target.tagName === 'LINK' || target.tagName === 'SCRIPT' || target.tagName === 'IMG')) {
-            console.error('Failed to load resource:', target.href || target.src || target.srcset);
-            // Try to reload the page if a chunk fails to load
-            if (target.tagName === 'SCRIPT' && (target.src || '').includes('chunk-')) {
-              console.log('Chunk load error detected, reloading page...');
-              setTimeout(() => window.location.reload(), 1000);
-            }
-          }
-        }, true);
-      }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Elfsight WhatsApp Chat Widget Script -->
+    <script src="https://static.elfsight.com/platform/platform.js" async></script>
   </head>
-  <body class="bg-white text-gray-900">
-    <div id="root">
-      <div style="display: flex; justify-content: center; align-items: center; height: 100vh; background: white;">
-        <div style="text-align: center; padding: 2rem;">
-          <h1>Loading...</h1>
-          <p>If you see this for more than a few seconds, please check the console for errors.</p>
-        </div>
-      </div>
-    </div>
+
+  <body>
+    <div id="root"></div>
+    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
+    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
-    <script>
-      // Global error handler
-      window.onerror = function(message, source, lineno, colno, error) {
-        console.error('Global error:', { message, source, lineno, colno, error });
-        const root = document.getElementById('root');
-        if (root) {
-          root.innerHTML = `
-            <div style="padding: 2rem; color: #ef4444;">
-              <h1>Something went wrong</h1>
-              <p>${message}</p>
-              <p>Check the console for more details.</p>
-              <button onclick="window.location.reload()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #3b82f6; color: white; border: none; border-radius: 0.25rem; cursor: pointer;">
-                Reload Page
-              </button>
-            </div>
-          `;
-        }
-      };
-    </script>
   </body>
 </html>
