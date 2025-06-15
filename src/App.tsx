@@ -43,18 +43,42 @@ const ExportData = lazy(() => import('@/pages/admin/ExportData'));
 import { AuthProvider } from '@/hooks/useAuth';
 import EditContent from "./pages/admin/EditContent";
 
-// Initialize AOS with mobile-friendly settings
-AOS.init({
-  duration: 600,
-  once: true,
-  offset: 20, // Smaller offset for mobile
-  delay: 50, // Shorter delay for better mobile performance
-  disable: window.innerWidth < 768, // Disable AOS on mobile initially
-  mobile: false, // Disable animations on mobile by default
-  easing: 'ease-out-quad', // Smoother animation
-});
-
-// Re-enable AOS on mobile after initial load if needed
+// Initialize AOS with mobile optimizations
+useEffect(() => {
+  const initializeAOS = async () => {
+    const AOS = (await import('aos')).default;
+    const isMobile = window.innerWidth < 768;
+    
+    AOS.init({
+      duration: 600, // Slightly faster animations on mobile
+      once: true, // Only animate once
+      easing: 'ease-out-cubic', // Smoother easing
+      mirror: false, // Don't mirror animations on scroll up
+      offset: isMobile ? 20 : 100, // Smaller offset on mobile
+      delay: isMobile ? 50 : 0, // Small delay on mobile for better performance
+      disable: isMobile ? 'mobile' : false, // Disable on mobile if needed
+    });
+    
+    // Refresh AOS on window resize
+    const handleResize = () => {
+      AOS.refresh();
+    };
+    
+    window.addEventListener('resize', handleResize);
+    
+    // Initial refresh after all elements are loaded
+    const timer = setTimeout(() => {
+      AOS.refresh();
+    }, 1000);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(timer);
+    };
+  };
+  
+  initializeAOS();
+}, []);
 const handleResize = () => {
   AOS.refresh();
 };
