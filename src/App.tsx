@@ -43,12 +43,28 @@ const ExportData = lazy(() => import('@/pages/admin/ExportData'));
 import { AuthProvider } from '@/hooks/useAuth';
 import EditContent from "./pages/admin/EditContent";
 
-// Initialize AOS
+// Initialize AOS with mobile-friendly settings
 AOS.init({
-  duration: 800,
+  duration: 600,
   once: true,
-  offset: 50, // Trigger animations when element is 50px from bottom of viewport
-  delay: 100, // Slight delay for better performance
+  offset: 20, // Smaller offset for mobile
+  delay: 50, // Shorter delay for better mobile performance
+  disable: window.innerWidth < 768, // Disable AOS on mobile initially
+  mobile: false, // Disable animations on mobile by default
+  easing: 'ease-out-quad', // Smoother animation
+});
+
+// Re-enable AOS on mobile after initial load if needed
+const handleResize = () => {
+  AOS.refresh();
+};
+
+// Add resize event listener
+window.addEventListener('resize', handleResize);
+
+// Cleanup
+document.addEventListener('DOMContentLoaded', () => {
+  AOS.refresh();
 });
 
 // Add smooth scrolling to the entire app
