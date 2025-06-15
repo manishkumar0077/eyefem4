@@ -12,7 +12,8 @@
     "vercel-build": "npm run build"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",

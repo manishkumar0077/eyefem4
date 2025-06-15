@@ -28,7 +28,13 @@
   </head>
 
   <body>
-    <div id="root"></div>
+    <div id="root" class="min-h-screen flex flex-col"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // Fix for Vercel routing
+      if (window.location.hostname !== 'localhost' && window.location.protocol !== 'https:') {
+        window.location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
+      }
+    </script>
   </body>
 </html>
