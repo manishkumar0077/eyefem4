@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Route, Routes, useLocation } from "react-router-dom";
-import { lazy, Suspense, useLayoutEffect } from 'react';
+import { lazy, Suspense } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -43,52 +43,12 @@ const ExportData = lazy(() => import('@/pages/admin/ExportData'));
 import { AuthProvider } from '@/hooks/useAuth';
 import EditContent from "./pages/admin/EditContent";
 
-// Initialize AOS with mobile optimizations
-useEffect(() => {
-  const initializeAOS = async () => {
-    const AOS = (await import('aos')).default;
-    const isMobile = window.innerWidth < 768;
-    
-    AOS.init({
-      duration: 600, // Slightly faster animations on mobile
-      once: true, // Only animate once
-      easing: 'ease-out-cubic', // Smoother easing
-      mirror: false, // Don't mirror animations on scroll up
-      offset: isMobile ? 20 : 100, // Smaller offset on mobile
-      delay: isMobile ? 50 : 0, // Small delay on mobile for better performance
-      disable: isMobile ? 'mobile' : false, // Disable on mobile if needed
-    });
-    
-    // Refresh AOS on window resize
-    const handleResize = () => {
-      AOS.refresh();
-    };
-    
-    window.addEventListener('resize', handleResize);
-    
-    // Initial refresh after all elements are loaded
-    const timer = setTimeout(() => {
-      AOS.refresh();
-    }, 1000);
-    
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      clearTimeout(timer);
-    };
-  };
-  
-  initializeAOS();
-}, []);
-const handleResize = () => {
-  AOS.refresh();
-};
-
-// Add resize event listener
-window.addEventListener('resize', handleResize);
-
-// Cleanup
-document.addEventListener('DOMContentLoaded', () => {
-  AOS.refresh();
+// Initialize AOS
+AOS.init({
+  duration: 800,
+  once: true,
+  offset: 50, // Trigger animations when element is 50px from bottom of viewport
+  delay: 100, // Slight delay for better performance
 });
 
 // Add smooth scrolling to the entire app
@@ -117,7 +77,7 @@ const SmoothScroll = () => {
 function App() {
   return (
     <AuthProvider>
-      <div className="App min-h-screen flex flex-col">
+      <div className="App">
         <ScrollToTop />
         <SmoothScroll />
         <Routes>

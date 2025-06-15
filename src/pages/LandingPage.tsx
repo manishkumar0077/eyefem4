@@ -19,6 +19,12 @@ import { useDepartments } from "@/hooks/useDepartments";
 import { useWhyChooseUs } from "@/hooks/useWhyChooseUs";
 import { useState, useEffect, useRef } from "react";
 
+declare global {
+  interface Window {
+    AOS: any; // Add type definition for AOS
+  }
+}
+
 const LandingPage = () => {
   const [hoverEyeCare, setHoverEyeCare] = useState(false);
   const [hoverGynecology, setHoverGynecology] = useState(false);
@@ -54,16 +60,36 @@ const LandingPage = () => {
     checkMobile();
     window.addEventListener("resize", checkMobile);
 
-    // Initialize AOS
+    // Initialize AOS with mobile support
     const initializeAOS = async () => {
       const AOS = (await import("aos")).default;
       AOS.init({
-        duration: 800,
+        duration: 600,
         once: true,
-        easing: "ease-in-out",
+        easing: "ease-out-quad",
         mirror: false,
+        // Mobile-specific settings
+        disable: window.innerWidth < 640, // Disable AOS on mobile if needed
+        startEvent: 'DOMContentLoaded',
+        // Better mobile support
+        mobile: true,
+        debounceDelay: 50,
+        throttleDelay: 99,
+        // Settings for better mobile performance
+        offset: 120,
+        delay: 100,
       });
     };
+    
+    // Re-initialize AOS on window resize
+    const handleResize = () => {
+      const AOS = window.AOS;
+      if (AOS) {
+        AOS.refresh();
+      }
+    };
+    
+    window.addEventListener('resize', handleResize);
 
     initializeAOS();
 
@@ -74,9 +100,10 @@ const LandingPage = () => {
       }
     }, 4000);
 
-    // Cleanup event listener and timer
+    // Cleanup event listeners and timer
     return () => {
       window.removeEventListener("resize", checkMobile);
+      window.removeEventListener('resize', handleResize);
       clearTimeout(scrollTimer);
     };
   }, []);
@@ -106,9 +133,9 @@ const LandingPage = () => {
   } = useWhyChooseUs();
 
   return (
-    <div className="min-h-screen flex flex-col overflow-x-hidden">
+    <div className="min-h-screen flex flex-col">
       <header
-        className="fixed top-0 left-0 right-0 z-50 bg-white bg-opacity-90 backdrop-blur-sm shadow-sm w-full"
+        className="fixed top-0 left-0 right-0 z-50 bg-white bg-opacity-90 backdrop-blur-sm shadow-sm"
         data-aos="fade-down"
       >
           <div className="container mx-auto px-4 py-3 flex items-center justify-between">
@@ -244,37 +271,34 @@ const LandingPage = () => {
       <PageTransition>
         <main className="flex-grow pt-16"> {/* Add padding-top to account for fixed header */}
 
-        {/* Hero Section */}
-        <div className="relative flex flex-col items-center justify-center min-h-[calc(100vh-64px)] sm:min-h-screen w-full overflow-hidden bg-gradient-to-r from-blue-500 to-purple-600 text-white pt-16">
+        <div className="relative flex flex-col items-center justify-center min-h-screen w-full overflow-x-hidden bg-gradient-to-r from-blue-500 to-purple-600 text-white pt-16">
           {/* Hero shapes positioned absolutely, hidden on small screens */}
-          <div className="absolute inset-0 w-full h-full overflow-hidden">
-            <HeroShape
-              className="hidden sm:block absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-32 h-32 sm:w-48 sm:h-48 opacity-70"
-              data-aos="fade-right"
-              data-aos-delay="200"
-            />
-            <HeroShape
-              className="hidden sm:block absolute top-3/4 left-1/5 -translate-y-1/2 w-24 h-24 sm:w-40 sm:h-40 opacity-70"
-              data-aos="fade-left"
-              data-aos-delay="400"
-            />
-            <HeroShape
-              className="hidden sm:block absolute top-2/3 right-1/4 translate-x-1/2 w-28 h-28 sm:w-44 sm:h-44 opacity-70"
-              data-aos="fade-down"
-              data-aos-delay="600"
-            />
-            <HeroShape
-              className="hidden sm:block absolute bottom-1/4 right-1/5 w-20 h-20 sm:w-36 sm:h-36 opacity-70"
-              data-aos="fade-up"
-              data-aos-delay="800"
-            />
-          </div>
+          <HeroShape
+            className="hidden sm:block top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2"
+            data-aos="fade-right"
+            data-aos-delay="200"
+          />
+          <HeroShape
+            className="hidden sm:block top-3/4 left-1/5 -translate-y-1/2"
+            data-aos="fade-left"
+            data-aos-delay="400"
+          />
+          <HeroShape
+            className="hidden sm:block top-2/3 right-1/4 translate-x-1/2"
+            data-aos="fade-down"
+            data-aos-delay="600"
+          />
+          <HeroShape
+            className="hidden sm:block bottom-1/4 right-1/5"
+            data-aos="fade-up"
+            data-aos-delay="800"
+          />
 
           <div
             className="relative z-10 text-center w-full max-w-3xl mx-auto px-4 py-12 sm:py-0"
             data-aos="zoom-in"
             data-aos-duration="1000"
-            data-aos-easing="ease-out-cubic"
+            data-aos-mobile="false"
           >
             {isLoading ? (
               <div className="animate-pulse">
@@ -284,10 +308,10 @@ const LandingPage = () => {
               </div>
             ) : (
               <>
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 px-2 sm:px-4">
+                <h1 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 px-2">
                   {content?.heading || defaultHeading}
                 </h1>
-                <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-8 text-white/90 px-4 sm:px-6">
+                <p className="text-lg sm:text-xl md:text-2xl mb-8 sm:mb-10 text-white/90 px-4">
                   {content?.description || defaultDescription}
                 </p>
                 {/* Get Started button temporarily hidden
