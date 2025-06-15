@@ -19,12 +19,6 @@ import { useDepartments } from "@/hooks/useDepartments";
 import { useWhyChooseUs } from "@/hooks/useWhyChooseUs";
 import { useState, useEffect, useRef } from "react";
 
-declare global {
-  interface Window {
-    AOS: any; // Add type definition for AOS
-  }
-}
-
 const LandingPage = () => {
   const [hoverEyeCare, setHoverEyeCare] = useState(false);
   const [hoverGynecology, setHoverGynecology] = useState(false);
@@ -60,36 +54,33 @@ const LandingPage = () => {
     checkMobile();
     window.addEventListener("resize", checkMobile);
 
-    // Initialize AOS with mobile support
+    // Initialize AOS with mobile optimization
     const initializeAOS = async () => {
       const AOS = (await import("aos")).default;
       AOS.init({
-        duration: 600,
+        duration: 800,
         once: true,
-        easing: "ease-out-quad",
+        easing: "ease-in-out",
         mirror: false,
-        // Mobile-specific settings
-        disable: window.innerWidth < 640, // Disable AOS on mobile if needed
+        // Mobile optimizations
         startEvent: 'DOMContentLoaded',
-        // Better mobile support
+        // Better mobile handling
         mobile: true,
-        debounceDelay: 50,
+        // Disable animations on mobile
+        disable: window.innerWidth < 768 ? 'mobile' : false,
+        // Better performance
         throttleDelay: 99,
-        // Settings for better mobile performance
-        offset: 120,
+        // Better mobile detection
+        debounceDelay: 50,
+        // Better mobile performance
         delay: 100,
       });
-    };
-    
-    // Re-initialize AOS on window resize
-    const handleResize = () => {
-      const AOS = window.AOS;
-      if (AOS) {
+
+      // Refresh AOS on resize
+      window.addEventListener('resize', () => {
         AOS.refresh();
-      }
+      });
     };
-    
-    window.addEventListener('resize', handleResize);
 
     initializeAOS();
 
@@ -100,10 +91,9 @@ const LandingPage = () => {
       }
     }, 4000);
 
-    // Cleanup event listeners and timer
+    // Cleanup event listener and timer
     return () => {
       window.removeEventListener("resize", checkMobile);
-      window.removeEventListener('resize', handleResize);
       clearTimeout(scrollTimer);
     };
   }, []);
@@ -271,7 +261,7 @@ const LandingPage = () => {
       <PageTransition>
         <main className="flex-grow pt-16"> {/* Add padding-top to account for fixed header */}
 
-        <div className="relative flex flex-col items-center justify-center min-h-screen w-full overflow-x-hidden bg-gradient-to-r from-blue-500 to-purple-600 text-white pt-16">
+        <div className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden bg-gradient-to-r from-blue-500 to-purple-600 text-white pt-16">
           {/* Hero shapes positioned absolutely, hidden on small screens */}
           <HeroShape
             className="hidden sm:block top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2"
@@ -295,10 +285,9 @@ const LandingPage = () => {
           />
 
           <div
-            className="relative z-10 text-center w-full max-w-3xl mx-auto px-4 py-12 sm:py-0"
+            className="relative z-10 text-center max-w-3xl mx-auto px-4 py-12 sm:py-0"
             data-aos="zoom-in"
             data-aos-duration="1000"
-            data-aos-mobile="false"
           >
             {isLoading ? (
               <div className="animate-pulse">
@@ -308,10 +297,10 @@ const LandingPage = () => {
               </div>
             ) : (
               <>
-                <h1 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 px-2">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
                   {content?.heading || defaultHeading}
                 </h1>
-                <p className="text-lg sm:text-xl md:text-2xl mb-8 sm:mb-10 text-white/90 px-4">
+                <p className="text-lg sm:text-xl md:text-2xl mb-6 sm:mb-8 text-white/90 px-2">
                   {content?.description || defaultDescription}
                 </p>
                 {/* Get Started button temporarily hidden

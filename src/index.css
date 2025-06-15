@@ -20,9 +20,25 @@ html, body, [data-scroll-container] {
 
 /* Optimize for smooth scrolling on iOS */
 @media (max-width: 1024px) {
-  html, body {
+  html, body, #root {
     -webkit-overflow-scrolling: touch;
     overflow-x: hidden;
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* Fix for AOS on mobile */
+  [data-aos] {
+    pointer-events: auto !important;
+  }
+  
+  /* Ensure all sections are visible on mobile */
+  section {
+    min-height: auto !important;
+    padding: 2rem 0;
+    position: relative;
+    overflow: visible !important;
   }
 }
 
