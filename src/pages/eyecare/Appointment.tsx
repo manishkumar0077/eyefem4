@@ -203,8 +203,7 @@ const EyeCareAppointment = () => {
                       <div>
                         <h3 className="text-lg sm:text-xl font-bold mb-1">Clinic EyeFem</h3>
                         <p className="text-gray-600 text-sm sm:text-base">
-                          25/11, East Patel Nagar, New Delhi<br />
-                          Delhi 110008
+                          25/11, East Patel Nagar, New Delhi, 110008
                         </p>
                       </div>
                     </div>

@@ -3,19 +3,51 @@
 @tailwind utilities;
 
 /* Global styles */
-html {
+:root {
+  --vh: 1vh;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+html, body {
   width: 100%;
-  height: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
   -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  position: relative;
+  background-color: #fff;
+}
+
+html {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   scroll-padding-top: 80px; /* Account for fixed header */
+  height: 100%;
+}
+
+/* Fix for mobile viewport units */
+@supports (-webkit-touch-callout: none) {
+  html {
+    height: -webkit-fill-available;
+  }
+  
+  body {
+    min-height: -webkit-fill-available;
+  }
 }
 
 /* Smooth scrolling for elements with scroll behavior */
 html, body, [data-scroll-container] {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
 }
 
 /* Optimize for smooth scrolling on iOS */
@@ -23,6 +55,24 @@ html, body, [data-scroll-container] {
   html, body {
     -webkit-overflow-scrolling: touch;
     overflow-x: hidden;
+    position: relative;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    /* Prevent content from being cut off on mobile */
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-bottom: constant(safe-area-inset-bottom);
+  }
+  
+  /* Fix for iOS elastic scrolling */
+  body {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
   }
 }
 
@@ -30,6 +80,7 @@ html, body, [data-scroll-container] {
 * {
   scrollbar-width: thin;
   scrollbar-color: #cbd5e1 #f1f5f9;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Custom scrollbar for WebKit browsers */
@@ -56,14 +107,14 @@ body {
   min-height: 100%;
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
   position: relative;
   display: flex;
   flex-direction: column;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  overscroll-behavior-y: none;
+  overflow-x: hidden;
+  background-color: #fff; /* Ensure background is white */
 }
 
 * {
@@ -89,6 +140,9 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
+  background-color: #fff;
 }
 
 @layer base {

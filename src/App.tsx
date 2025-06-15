@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useLayoutEffect } from 'react';
 import { Route, Routes, useLocation } from "react-router-dom";
 import { lazy, Suspense } from 'react';
 import { Toaster } from "@/components/ui/toaster";
@@ -6,9 +6,15 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import "react-quill/dist/quill.snow.css"; // Add Quill CSS
 import "@/styles/quill-editor.css"; // Add our custom Quill styles
+import { initializeMobileOptimizations } from "@/utils/mobileUtils";
 
 import ScrollToTop from "@/components/ScrollToTop";
 import { smoothScrollTo, initSmoothScrolling } from "@/utils/scrollUtils";
+
+// Initialize mobile optimizations before React renders the app
+if (typeof window !== 'undefined') {
+  initializeMobileOptimizations();
+}
 
 // Import pages
 import LandingPage from "@/pages/LandingPage";
@@ -43,17 +49,37 @@ const ExportData = lazy(() => import('@/pages/admin/ExportData'));
 import { AuthProvider } from '@/hooks/useAuth';
 import EditContent from "./pages/admin/EditContent";
 
-// Initialize AOS
-AOS.init({
-  duration: 800,
-  once: true,
-  offset: 50, // Trigger animations when element is 50px from bottom of viewport
-  delay: 100, // Slight delay for better performance
-});
+// Initialize AOS with mobile-friendly settings
+const initAOS = () => {
+  AOS.init({
+    duration: 600,
+    once: true,
+    offset: 20, // Lower offset for mobile
+    delay: 50, // Shorter delay for mobile
+    easing: 'ease-out-cubic',
+    disable: window.innerWidth < 768, // Disable AOS on mobile initially
+    startEvent: 'DOMContentLoaded',
+  });
+
+  // Re-enable AOS on mobile after initial load
+  if (window.innerWidth < 768) {
+    setTimeout(() => {
+      AOS.refresh();
+    }, 1000);
+  }
+};
+
+// Initialize AOS when component mounts
+if (typeof window !== 'undefined') {
+  window.addEventListener('load', initAOS);
+  window.addEventListener('resize', () => {
+    AOS.refresh();
+  });
+}
 
 // Add smooth scrolling to the entire app
 const SmoothScroll = () => {
-  useEffect(() => {
+  useLayoutEffect(() => {
     // Apply smooth scrolling to all anchor links
     const cleanup = initSmoothScrolling();
     
@@ -64,10 +90,24 @@ const SmoothScroll = () => {
       });
     };
     
+    // Initialize mobile optimizations
+    const cleanupMobile = initializeMobileOptimizations();
+    
+    // Add event listeners
     window.addEventListener('popstate', handleRouteChange);
+    
+    // Handle mobile viewport resize
+    const handleResize = () => {
+      initializeMobileOptimizations();
+    };
+    
+    window.addEventListener('resize', handleResize);
+    
     return () => {
       cleanup();
+      cleanupMobile();
       window.removeEventListener('popstate', handleRouteChange);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
   
@@ -75,9 +115,17 @@ const SmoothScroll = () => {
 };
 
 function App() {
+  const location = useLocation();
+  
+  // Re-initialize mobile optimizations on route change
+  useEffect(() => {
+    initializeMobileOptimizations();
+  }, [location.pathname]);
+  
   return (
     <AuthProvider>
       <div className="App">
+        <SmoothScroll />
         <ScrollToTop />
         <SmoothScroll />
         <Routes>
