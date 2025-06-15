@@ -7,8 +7,10 @@ export default defineConfig(({ mode }) => {
   // Load env file based on `mode` in the current directory.
   const env = loadEnv(mode, process.cwd(), '');
   
+  const isProduction = mode === 'production';
+  
   return {
-    base: './', // This ensures assets are loaded from the correct path
+    base: isProduction ? '/.vercel/static/' : '/',
     server: {
       host: '::',
       port: 8080,

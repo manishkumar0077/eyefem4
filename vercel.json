@@ -6,13 +6,18 @@
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "dist"
+        "distDir": "dist",
+        "zeroConfig": true
       }
     }
   ],
   "routes": [
     {
-      "src": "/(.*)",
+      "src": "^/assets/(.*)",
+      "dest": "/assets/$1"
+    },
+    {
+      "src": "^/(.*)",
       "dest": "/index.html"
     }
   ],
@@ -22,7 +27,7 @@
   "devCommand": "vite",
   "framework": "vite",
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "^/(.*)", "destination": "/index.html" }
   ],
   "headers": [
     {

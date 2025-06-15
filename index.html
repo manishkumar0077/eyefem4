@@ -29,12 +29,26 @@
 
   <body>
     <div id="root" class="min-h-screen flex flex-col"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <!-- Use relative path for Vercel -->
+    <script type="module" src="./src/main.tsx"></script>
     <script>
       // Fix for Vercel routing
       if (window.location.hostname !== 'localhost' && window.location.protocol !== 'https:') {
         window.location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
       }
+      
+      // Error handling for failed module loads
+      window.addEventListener('error', function(e) {
+        if (e.target && (e.target.tagName === 'LINK' || e.target.tagName === 'SCRIPT')) {
+          const url = new URL(e.target.src || e.target.href, window.location.origin);
+          console.error('Failed to load resource:', url.pathname);
+          // Try to reload the page if it's a chunk that failed to load
+          if (url.pathname.includes('chunk-')) {
+            console.log('Attempting to reload the page...');
+            window.location.reload();
+          }
+        }
+      }, true);
     </script>
   </body>
 </html>
