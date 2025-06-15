@@ -9,8 +9,8 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   
   return {
-    // Use empty base path for both dev and production
-    base: '/',
+    // Use relative paths for assets
+    base: './',
     plugins: [react()],
     resolve: {
       alias: {
@@ -50,6 +50,14 @@ export default defineConfig(({ mode }) => {
     define: {
       'process.env': { ...env, NODE_ENV: process.env.NODE_ENV || 'production' },
       __APP_ENV__: JSON.stringify(process.env.NODE_ENV || 'production'),
+    },
+    optimizeDeps: {
+      esbuildOptions: {
+        // Enable esbuild's define API to replace global variables
+        define: {
+          global: 'globalThis',
+        },
+      },
     },
   };
 });

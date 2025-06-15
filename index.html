@@ -36,7 +36,33 @@
     </script>
   </head>
   <body class="bg-white text-gray-900">
-    <div id="root"></div>
+    <div id="root">
+      <div style="display: flex; justify-content: center; align-items: center; height: 100vh; background: white;">
+        <div style="text-align: center; padding: 2rem;">
+          <h1>Loading...</h1>
+          <p>If you see this for more than a few seconds, please check the console for errors.</p>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // Global error handler
+      window.onerror = function(message, source, lineno, colno, error) {
+        console.error('Global error:', { message, source, lineno, colno, error });
+        const root = document.getElementById('root');
+        if (root) {
+          root.innerHTML = `
+            <div style="padding: 2rem; color: #ef4444;">
+              <h1>Something went wrong</h1>
+              <p>${message}</p>
+              <p>Check the console for more details.</p>
+              <button onclick="window.location.reload()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #3b82f6; color: white; border: none; border-radius: 0.25rem; cursor: pointer;">
+                Reload Page
+              </button>
+            </div>
+          `;
+        }
+      };
+    </script>
   </body>
 </html>
