@@ -90,32 +90,10 @@ const SmoothScroll = () => {
   return null;
 };
 
-// Component to handle body class based on route
-const RouteBodyClass = () => {
-  const location = useLocation();
-
-  useLayoutEffect(() => {
-    // Add a class to body when on home page
-    if (location.pathname === '/') {
-      document.body.classList.add('home-page');
-    } else {
-      document.body.classList.remove('home-page');
-    }
-
-    // Cleanup function to remove the class when component unmounts
-    return () => {
-      document.body.classList.remove('home-page');
-    };
-  }, [location.pathname]);
-
-  return null;
-};
-
 function App() {
   return (
     <AuthProvider>
       <div className="App min-h-screen flex flex-col">
-        <RouteBodyClass />
         <ScrollToTop />
         <SmoothScroll />
         <Routes>

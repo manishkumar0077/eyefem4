@@ -18,7 +18,7 @@ html {
   overflow-x: hidden;
 }
 
-/* Default: Single scrollbar */
+/* Single scrollbar for all pages */
 body {
   position: relative;
   width: 100%;
@@ -29,25 +29,16 @@ body {
   text-rendering: optimizeLegibility;
   margin: 0;
   padding: 0;
-}
-
-/* Home page specific: Double scrollbar */
-body.home-page {
-  height: 100vh;
-  overflow: hidden; /* Prevent default body scroll */
+  overflow-y: auto;
 }
 
 /* Root container */
 #root {
   max-width: 100vw;
   overflow-x: hidden;
-  height: 100%;
-}
-
-/* Home page specific: Enable scrolling on the root */
-body.home-page #root {
-  height: 100%;
-  overflow-y: auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Smooth scrolling for elements with scroll behavior */
