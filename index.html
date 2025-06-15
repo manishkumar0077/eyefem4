@@ -1,54 +1,42 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover, shrink-to-fit=no" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="description" content="EyeFem - Your eye care solution" />
+    <meta name="theme-color" content="#000000" />
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#ffffff">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Eyefem Healthcare - Eye Care & Gynecology Specialists</title>
-    <meta name="description" content="Specialized medical care for Eye Health and Women's Health, delivered by expert doctors with cutting-edge technology." />
-    <meta name="author" content="Eyefem Healthcare" />
-
-    <meta property="og:title" content="Eyefem Healthcare - Eye Care & Gynecology Specialists" />
-    <meta property="og:description" content="Specialized medical care for Eye Health and Women's Health, delivered by expert doctors with cutting-edge technology." />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="/opengraph-image.png" />
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@eyefem" />
-    <meta name="twitter:image" content="/opengraph-image.png" />
+    <meta name="apple-mobile-web-app-title" content="EyeFem">
+    <title>EyeFem</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Elfsight WhatsApp Chat Widget Script -->
-    <script src="https://static.elfsight.com/platform/platform.js" async></script>
-  </head>
-
-  <body>
-    <div id="root" class="min-h-screen flex flex-col"></div>
-    <!-- Use relative path for Vercel -->
-    <script type="module" src="./src/main.tsx"></script>
     <script>
-      // Fix for Vercel routing
-      if (window.location.hostname !== 'localhost' && window.location.protocol !== 'https:') {
-        window.location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
-      }
-      
-      // Error handling for failed module loads
-      window.addEventListener('error', function(e) {
-        if (e.target && (e.target.tagName === 'LINK' || e.target.tagName === 'SCRIPT')) {
-          const url = new URL(e.target.src || e.target.href, window.location.origin);
-          console.error('Failed to load resource:', url.pathname);
-          // Try to reload the page if it's a chunk that failed to load
-          if (url.pathname.includes('chunk-')) {
-            console.log('Attempting to reload the page...');
-            window.location.reload();
-          }
+      // Error handling for production
+      if (window.location.hostname !== 'localhost') {
+        // Redirect to HTTPS
+        if (window.location.protocol !== 'https:') {
+          window.location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
         }
-      }, true);
+        
+        // Handle chunk loading errors
+        window.addEventListener('error', function(event) {
+          const target = event.target || event.srcElement;
+          if (target && (target.tagName === 'LINK' || target.tagName === 'SCRIPT' || target.tagName === 'IMG')) {
+            console.error('Failed to load resource:', target.href || target.src || target.srcset);
+            // Try to reload the page if a chunk fails to load
+            if (target.tagName === 'SCRIPT' && (target.src || '').includes('chunk-')) {
+              console.log('Chunk load error detected, reloading page...');
+              setTimeout(() => window.location.reload(), 1000);
+            }
+          }
+        }, true);
+      }
     </script>
+  </head>
+  <body class="bg-white text-gray-900">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

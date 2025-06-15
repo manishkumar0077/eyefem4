@@ -5,45 +5,51 @@ import path from 'path';
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   // Load env file based on `mode` in the current directory.
+  // Set the third parameter to '' to load all env regardless of the `VITE_` prefix.
   const env = loadEnv(mode, process.cwd(), '');
   
-  const isProduction = mode === 'production';
-  
   return {
-    base: isProduction ? '/.vercel/static/' : '/',
-    server: {
-      host: '::',
-      port: 8080,
-    },
-    plugins: [
-      react(),
-      // Custom plugins can be added here
-    ].filter(Boolean),
+    // Use empty base path for both dev and production
+    base: '/',
+    plugins: [react()],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
       },
     },
+    server: {
+      port: 3000,
+      strictPort: true,
+      host: true,
+      open: true,
+    },
     build: {
       outDir: 'dist',
-      sourcemap: true, // Helps with debugging
+      assetsDir: 'assets',
+      emptyOutDir: true,
+      sourcemap: true,
       rollupOptions: {
         output: {
-          manualChunks: {
-            // Split vendor and app code for better caching
-            vendor: ['react', 'react-dom', 'react-router-dom'],
+          manualChunks: (id: string) => {
+            if (id.includes('node_modules')) {
+              if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) {
+                return 'vendor-react';
+              }
+              if (id.includes('framer-motion') || id.includes('react-icons')) {
+                return 'vendor-ui';
+              }
+              return 'vendor';
+            }
+            return undefined;
           },
         },
       },
+      chunkSizeWarningLimit: 1000,
     },
-    // Ensure environment variables are properly loaded
+    // Ensure environment variables are available in the client
     define: {
-      'process.env': {
-        ...Object.keys(env).reduce((prev, key) => {
-          prev[key] = JSON.stringify(env[key]);
-          return prev;
-        }, {} as Record<string, string>),
-      },
+      'process.env': { ...env, NODE_ENV: process.env.NODE_ENV || 'production' },
+      __APP_ENV__: JSON.stringify(process.env.NODE_ENV || 'production'),
     },
   };
 });
