@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Route, Routes, useLocation } from "react-router-dom";
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useLayoutEffect } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -90,10 +90,32 @@ const SmoothScroll = () => {
   return null;
 };
 
+// Component to handle body class based on route
+const RouteBodyClass = () => {
+  const location = useLocation();
+
+  useLayoutEffect(() => {
+    // Add a class to body when on home page
+    if (location.pathname === '/') {
+      document.body.classList.add('home-page');
+    } else {
+      document.body.classList.remove('home-page');
+    }
+
+    // Cleanup function to remove the class when component unmounts
+    return () => {
+      document.body.classList.remove('home-page');
+    };
+  }, [location.pathname]);
+
+  return null;
+};
+
 function App() {
   return (
     <AuthProvider>
-      <div className="App">
+      <div className="App min-h-screen flex flex-col">
+        <RouteBodyClass />
         <ScrollToTop />
         <SmoothScroll />
         <Routes>
